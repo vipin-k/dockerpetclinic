@@ -4,9 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.springframework.samples</groupId>
     <artifactId>spring-framework-petclinic</artifactId>
-    <version>5.1.3</version>
+    <version>5.2.3</version>
 
-    <name>petclinic</name>
+    <name>Spring Framework Petclinic</name>
     <packaging>war</packaging>
     <description>A Spring Framework application based on JSP, Spring MVC, Spring Data JPA, Hibernate and JDBC</description>
     <url>https://github.com/spring-petclinic/</url>
@@ -17,10 +17,13 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
 
         <!-- Spring -->
-        <spring-framework.version>5.1.3.RELEASE</spring-framework.version>
-        <spring-data-jdbc.version>2.0.0.M1</spring-data-jdbc.version>
+        <!-- For framework compatibility, refer to the Spring Boot Dependencies BOM -->
+        <!-- https://github.com/spring-projects/spring-boot/blob/master/spring-boot-project/spring-boot-dependencies/pom.xml -->
+        <spring-framework.version>5.2.3.RELEASE</spring-framework.version>
 
         <!-- Web dependencies -->
         <!-- Version update should also be done in wro.xml, petclinic.less and static resources: htmlHeader.tag and footer.tag-->
@@ -30,41 +33,52 @@
         <wro4j.version>1.8.0</wro4j.version>
 
         <!-- Java EE / Java SE dependencies -->
-        <tomcat.version>9.0.12</tomcat.version>
-        <jaxb.version>2.3.0</jaxb.version>
+        <tomcat.version>9.0.26</tomcat.version>
+        <jaxb-api.version>2.3.1</jaxb-api.version>
+        <jaxb-core.version>2.3.0.1</jaxb-core.version>
+        <jaxb-impl.version>2.3.2</jaxb-impl.version>
         <activation.version>1.1.1</activation.version>
         <servlet-api.version>4.0.1</servlet-api.version>
-        <javax-jstl.version>1.2.2</javax-jstl.version>
         <taglibs-standard.version>1.2.5</taglibs-standard.version>
 
         <!-- Persistence -->
-        <spring-data-releasetrain.version>Lovelace-SR3</spring-data-releasetrain.version>
-        <hibernate.version>5.3.6.Final</hibernate.version>
-        <hibernate-validator.version>6.0.13.Final</hibernate-validator.version>
-        <hsqldb.version>2.4.1</hsqldb.version>
+        <spring-data-releasetrain.version>Moore-RELEASE</spring-data-releasetrain.version>
+        <hibernate.version>5.4.6.Final</hibernate.version>
+        <hibernate-validator.version>6.1.0.Final</hibernate-validator.version>
+        <hsqldb.version>2.5.0</hsqldb.version>
 
         <!-- Logging -->
-        <slf4j.version>1.7.25</slf4j.version>
+        <slf4j.version>1.7.28</slf4j.version>
         <logback.version>1.2.3</logback.version>
 
         <!-- Test -->
-        <assertj.version>2.2.0</assertj.version>
-        <jacoco.version>0.8.1</jacoco.version>
+        <assertj.version>3.13.2</assertj.version>
+        <jacoco.version>0.8.2</jacoco.version>
         <json-path.version>2.4.0</json-path.version>
-        <mockito.version>2.22.0</mockito.version>
-        <hamcrest.version>1.3</hamcrest.version>
-        <junit-jupiter.version>5.3.1</junit-jupiter.version>
+        <mockito.version>3.1.0</mockito.version>
+        <hamcrest.version>2.1</hamcrest.version>
+        <junit-jupiter.version>5.5.2</junit-jupiter.version>
 
         <!-- JDBC Drivers -->
         <mysql-driver.version>8.0.11</mysql-driver.version>
         <postgresql-driver.version>9.4.1211.jre7</postgresql-driver.version>
 
         <!-- Others -->
-        <jackson.version>2.9.7</jackson.version>
-        <aspectj.version>1.9.1</aspectj.version>
+        <jackson.version>2.10.0</jackson.version>
+        <aspectj.version>1.9.4</aspectj.version>
 
         <!-- Maven plugins -->
-        <jetty-maven-plugin.version>9.4.12.v20180830</jetty-maven-plugin.version>
+        <jetty-maven-plugin.version>9.4.20.v20190813</jetty-maven-plugin.version>
+        <maven-assembly-plugin.version>3.1.1</maven-assembly-plugin.version>
+        <maven-compiler-plugin.version>3.8.0</maven-compiler-plugin.version>
+        <maven-eclipse-plugin.version>2.9</maven-eclipse-plugin.version>
+        <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+        <maven-surefire-plugin.version>2.22.1</maven-surefire-plugin.version>
+        <maven-war-plugin.version>3.2.2</maven-war-plugin.version>
+
+        <!-- Docker image -->
+        <docker.jib-maven-plugin.version>1.7.0</docker.jib-maven-plugin.version>
+        <docker.image.prefix>springcommunity</docker.image.prefix>
 
     </properties>
 
@@ -102,11 +116,6 @@
         </dependency>
 
         <dependency>
-            <groupId>javax.servlet.jsp.jstl</groupId>
-            <artifactId>javax.servlet.jsp.jstl-api</artifactId>
-            <version>${javax-jstl.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.apache.taglibs</groupId>
             <artifactId>taglibs-standard-jstlel</artifactId>
             <version>${taglibs-standard.version}</version>
@@ -130,19 +139,6 @@
         <dependency>
             <groupId>org.springframework.data</groupId>
             <artifactId>spring-data-jpa</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.data</groupId>
-            <artifactId>spring-data-jdbc-core</artifactId>
-            <version>${spring-data-jdbc.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.springframework</groupId>
-                    <artifactId>*</artifactId>
-                </exclusion>
-                <!--  because Spring Data usually comes with a slightly older version of Spring -->
-            </exclusions>
         </dependency>
 
         <dependency>
@@ -269,9 +265,33 @@
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>
-            <artifactId>hamcrest-all</artifactId>
+            <artifactId>hamcrest</artifactId>
             <version>${hamcrest.version}</version>
             <scope>test</scope>
+        </dependency>
+
+        <!-- JAXB and Activation added for Java 9 compatibility.
+             The JAXB API is considered to be Java EE API and therefore is
+             no longer contained on the default class path in Java SE 9 -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>${jaxb-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-core</artifactId>
+            <version>${jaxb-core.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>${jaxb-impl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>${activation.version}</version>
         </dependency>
 
     </dependencies>
@@ -299,22 +319,13 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.0</version>
-                <configuration>
-                    <compilerArguments>
-                        <Xlint/>
-                    </compilerArguments>
-                    <verbose>true</verbose>
-                    <source>${java.version}</source>
-                    <target>${java.version}</target>
-                    <showWarnings>true</showWarnings>
-                </configuration>
+                <version>${maven-compiler-plugin.version}</version>
             </plugin>
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.0</version>
+                <version>${maven-surefire-plugin.version}</version>
                 <configuration>
                     <includes>
                         <include>**/*Tests.java</include>
@@ -325,7 +336,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
-                <version>2.3</version>
+                <version>${maven-war-plugin.version}</version>
                 <configuration>
                     <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
@@ -334,7 +345,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-eclipse-plugin</artifactId>
-                <version>2.9</version>
+                <version>${maven-eclipse-plugin.version}</version>
                 <configuration>
                     <downloadSources>true</downloadSources>
                     <downloadJavadocs>true</downloadJavadocs>
@@ -361,7 +372,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>2.4</version>
+                <version>${maven-assembly-plugin.version}</version>
                 <configuration>
                     <descriptorRefs>
                         <descriptorRef>jar-with-dependencies</descriptorRef>
@@ -393,7 +404,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>2.4</version>
+                <version>${maven-resources-plugin.version}</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
                 </configuration>
@@ -424,6 +435,12 @@
                         <artifactId>bootstrap</artifactId>
                         <version>${webjars-bootstrap.version}</version>
                     </dependency>
+                    <!-- Required for Java 9 and above -->
+                    <dependency>
+                        <groupId>org.mockito</groupId>
+                        <artifactId>mockito-core</artifactId>
+                        <version>${mockito.version}</version>
+                    </dependency>
                 </dependencies>
             </plugin>
 
@@ -431,6 +448,21 @@
                 <groupId>org.eclipse.jetty</groupId>
                 <artifactId>jetty-maven-plugin</artifactId>
                 <version>${jetty-maven-plugin.version}</version>
+            </plugin>
+
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>${docker.jib-maven-plugin.version}</version>
+                <configuration>
+                    <to>
+                        <image>docker.io/${docker.image.prefix}/${project.artifactId}</image>
+                        <tags>
+                            <tag>${project.version}</tag>
+                            <tag>latest</tag>
+                        </tags>
+                    </to>
+                </configuration>
             </plugin>
 
         </plugins>
@@ -494,38 +526,6 @@
                     <artifactId>postgresql</artifactId>
                     <version>${postgresql-driver.version}</version>
                     <scope>runtime</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>java9+</id>
-            <activation>
-                <jdk>[9,)</jdk>
-            </activation>
-            <dependencies>
-                <!-- JAXB and Activation added for Java 9 compatibility.
-                     The JAXB API is considered to be Java EE API and therefore is
-                     no longer contained on the default class path in Java SE 9 -->
-                <dependency>
-                    <groupId>javax.xml.bind</groupId>
-                    <artifactId>jaxb-api</artifactId>
-                    <version>${jaxb.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.sun.xml.bind</groupId>
-                    <artifactId>jaxb-core</artifactId>
-                    <version>${jaxb.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>com.sun.xml.bind</groupId>
-                    <artifactId>jaxb-impl</artifactId>
-                    <version>${jaxb.version}</version>
-                </dependency>
-                <dependency>
-                    <groupId>javax.activation</groupId>
-                    <artifactId>activation</artifactId>
-                    <version>${activation.version}</version>
                 </dependency>
             </dependencies>
         </profile>
